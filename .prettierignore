@@ -1,0 +1,6 @@
+dist
+node_modules
+.eslintrc.cjs
+package.json
+tsconfig.json
+yarn.lock
