@@ -1,0 +1,439 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+"The javascript `Date` as string. Type represents date and time as the ISO Date string."
+scalar DateTime
+"The `Upload` scalar type represents a file upload."
+scalar Upload
+type Query {
+  getCommentByPost(cursor: Float, limit: Float = 10, postId: Float!): CommentResponse!
+  getCommentByUser(userId: Float!): CommentResponse!
+  getAllGroupUser(userId: Float!): [DiscussGroup!]!
+  messageTwoUser(limit: Float = 10, cursor: Float, discussionId: Float!): [MessageWithRecepter!]!
+  postByUser(limit: Float = 10, cursor: Float, userId: Float!): [PostDisplay!]!
+  getOrderPost(cursor: Float, limit: Float = 10): [PostDisplay!]!
+  allUser: [User!]!
+  profile(viewerId: Float!, profilId: Float!): UserDetails!
+  getDiscussionCurrentUser(limit: Float = 10, cursor: Float, userId: Float!): [DiscussionExtend!]!
+  getRequest(limit: Float = 10, cursor: Float, userId: Float!): [FriendRequestExtend!]!
+  getFriendOfCurrentUser(limit: Float = 10, status: Boolean, cursor: Float, userId: Float!): [User!]!
+  getCommonFriends(limit: Float = 10, cursor: Float, receiverId: Float!, userId: Float!): [User!]!
+  getSuggestionOfCurrentUser(limit: Float = 10, cursor: Float, userId: Float!): [User!]!
+  getNotifications(limit: Float = 10, cursor: Float, userId: Float!): [Notification!]!
+  getVideoCall(token: String!, userId: Float!): VideoCallMembers!
+}
+"response type for comment"
+type CommentResponse {
+  message: String!
+  success: Boolean!
+  data: [CommentWithUser!]
+}
+"comment with user"
+type CommentWithUser {
+  id: Int!
+  postId: Int!
+  content: String!
+  userId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  _count: CommentCount
+  User: User!
+  Post: Post!
+  files: [FileExt!]!
+}
+type CommentCount {
+  files: Int!
+}
+type User {
+  id: Int!
+  email: String!
+  status: Boolean!
+  firstname: String
+  lastname: String
+  password: String!
+  mode: UserMode!
+  photo: String
+  civilite: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  videoCallId: Int
+  _count: UserCount
+}
+type UserCount {
+  Post: Int!
+  comments: Int!
+  messages: Int!
+  receiverMessage: Int!
+  discussions: Int!
+  receiverDiscussions: Int!
+  request: Int!
+  friendRequest: Int!
+  groupes: Int!
+  reactions: Int!
+  notifications: Int!
+  UserGroup: Int!
+}
+type Post {
+  id: Int!
+  userId: Int!
+  description: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  groupId: Int
+  _count: PostCount
+}
+type PostCount {
+  files: Int!
+  reactions: Int!
+  comments: Int!
+}
+type FileExt {
+  id: Int!
+  name: String!
+  extension: String!
+  url: String!
+  postId: Int
+  commentId: Int
+  messageId: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  groupId: Int
+}
+type DiscussGroup {
+  id: Int!
+  groupName: String!
+  coverPhoto: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussionId: Int!
+  _count: DiscussGroupCount
+}
+type DiscussGroupCount {
+  members: Int!
+  groupeMessages: Int!
+}
+"message type with receiver and groupe"
+type MessageWithRecepter {
+  id: Int!
+  userId: Int!
+  receiverId: Int
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussGroupId: Int
+  discussionId: Int!
+  _count: MessageCount
+  User: User!
+  Receiver: User
+  DiscussGroup: GroupWithMembers
+  files: [FileExt!]!
+}
+type MessageCount {
+  files: Int!
+}
+"group with members"
+type GroupWithMembers {
+  id: Int!
+  groupName: String!
+  coverPhoto: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussionId: Int!
+  _count: DiscussGroupCount
+  members: [UserOnDiscussGroup!]!
+}
+type UserOnDiscussGroup {
+  userId: Int!
+  discussGroupId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+"Form of post to display"
+type PostDisplay {
+  id: Int!
+  userId: Int!
+  description: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  groupId: Int
+  _count: PostCount
+  user: User!
+  nbComments: Float!
+  reactions: [Reaction!]
+  files: [FileExt!]!
+}
+type Reaction {
+  id: Int!
+  reactionType: ReactionType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  postId: Int!
+  userId: Int!
+}
+"details of user"
+type UserDetails {
+  user: User!
+  friends: [User!]!
+  relation: FriendRequest
+}
+type FriendRequest {
+  id: Int!
+  status: RequestStatus!
+  receiverId: Int!
+  userId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+"Object that extends the discussion base models"
+type DiscussionExtend {
+  id: Int!
+  theme: String!
+  userId: Int!
+  receiverId: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  _count: DiscussionCount
+  User: User!
+  Receiver: User
+  DiscussGroup: GroupWithMembers
+  messages: [MessageWithRecepter!]!
+}
+type DiscussionCount {
+  messages: Int!
+}
+"friend request return type with sender"
+type FriendRequestExtend {
+  id: Int!
+  status: RequestStatus!
+  receiverId: Int!
+  userId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  User: User!
+}
+type Notification {
+  id: Int!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: Int
+}
+"videoCall with members"
+type VideoCallMembers {
+  id: Int!
+  status: CallStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussionId: Int!
+  _count: VideoCallCount
+  members: [User!]!
+}
+type VideoCallCount {
+  members: Int!
+}
+type Mutation {
+  createComment(commentInput: CommentInput!, postId: Float!, userId: Float!): String!
+  modifyComment(commentInput: CommentInput!, userId: Float!, commendId: Float!): String!
+  deleteComment(commentId: Float!, userId: Float!): String!
+  createDiscussGroup(userId: Float!, userChoose: UserChoose!, data: DiscussGroupInput!): DiscussGroupDiscussion!
+  upload(data: [Upload!]!): [FileExt!]!
+  deleteFile(url: String!): String!
+  sendMessageDiscoussGroup(discussGroupId: Float, receiverId: Float, discussionId: Float!, userId: Float!, messageInput: MessageInput!): DiscussionExtend!
+  writtingCheck(isWritting: Boolean!, discussionId: Float!, userId: Float!): MessageResponse!
+  deleteMessageById(userId: Float!, messageId: Float!): String!
+  modifyMessage(userId: Float!, newMessage: String!, messageId: Float!): String!
+  createPost(groupId: Float, userId: Float!, data: PostInput!): String!
+  addReaction(reactionType: ReactionInput!, userId: Float!, postId: Float!): String!
+  signup(userInput: SignupInput!): LoginResponseForm!
+  login(password: String!, email: String!): LoginResponseForm!
+  updateUser(updateUserInput: UpdateUserInput!, userId: Float!): String!
+  changeStatus(status: Boolean!, userId: Float!): String!
+  changeTheme(data: DiscussionInput!): Discussion!
+  createDiscussion(receiverId: Float!, userId: Float!): DiscussionExtend!
+  sendFriendRequest(receiverId: Float!, userId: Float!): String!
+  handleFriendRequest(status: String!, friendRequestId: Float!): String!
+  deleteFriend(receiverId: Float!, userId: Float!): String!
+  callUser(discussionId: Float!, userId: Float!): String!
+  sendSignal(video: Boolean!, audio: Boolean!, receiverId: Float!, signal: String!, userId: Float!): String!
+  returnSignal(video: Boolean!, audio: Boolean!, receiverId: Float!, signal: String!, userId: Float!): String!
+  leaveCall(token: String!, userId: Float!): String!
+  handleCallMutation(status: Boolean!, token: String!, userId: Float!): String!
+}
+"discuss group with discussion"
+type DiscussGroupDiscussion {
+  id: Int!
+  groupName: String!
+  coverPhoto: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussionId: Int!
+  _count: DiscussGroupCount
+  Discussion: Discussion!
+}
+type Discussion {
+  id: Int!
+  theme: String!
+  userId: Int!
+  receiverId: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  _count: DiscussionCount
+}
+"message response type"
+type MessageResponse {
+  message: String!
+  data: [Message!]
+  success: Boolean!
+}
+type Message {
+  id: Int!
+  userId: Int!
+  receiverId: Int
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussGroupId: Int
+  discussionId: Int!
+  _count: MessageCount
+}
+"Login response with token"
+type LoginResponseForm {
+  message: String!
+  success: Boolean!
+  data: UserWithToken
+}
+"User with token"
+type UserWithToken {
+  id: Int!
+  email: String!
+  status: Boolean!
+  firstname: String
+  lastname: String
+  password: String!
+  mode: UserMode!
+  photo: String
+  civilite: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  videoCallId: Int
+  _count: UserCount
+  token: String!
+}
+type Subscription {
+  commentPost(userId: Float!): Notification!
+  messageToUser(userId: Float!): DiscussionExtend!
+  writeMessage(userId: Float!): MessageWrittingObject!
+  getStatusUser(userId: Float!): User!
+  listenTheme(userId: Float!): DiscussionExtend!
+  sendRequestNotif(userId: Float!): FriendRequestExtend!
+  listenCall(userId: Float!): ListenCallObject!
+  lisenSendSignal(userId: Float!): SendSignalType!
+  lisenLeaveCall(userId: Float!): User!
+  lisenReturnSignal(userId: Float!): SendSignalType!
+  deniedCall(userId: Float!): String!
+}
+"return type of writting subcription"
+type MessageWrittingObject {
+  user: User!
+  discussionId: Float!
+  isWritting: Boolean!
+}
+"return type for listen call"
+type ListenCallObject {
+  discussion: DiscussionExtend!
+  token: String!
+}
+"send signal type"
+type SendSignalType {
+  signal: String!
+  user: User!
+  audio: Boolean!
+  video: Boolean!
+  receiverId: Float!
+}
+enum UserMode {
+  LIGHT
+  DARK
+}
+enum ReactionType {
+  LIKE
+  LOVE
+  WOAHOU
+  SAD
+  HAHA
+  GRR
+}
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  DENIED
+}
+enum CallStatus {
+  PENDING
+  ENDED
+}
+"input for the comment"
+input CommentInput {
+  content: String!
+  files: [FileInput!]!
+}
+"input for file"
+input FileInput {
+  name: String!
+  extension: String!
+  url: String!
+}
+"user id in the group discuss"
+input UserChoose {
+  membresId: [Float!]!
+}
+"user choose"
+input DiscussGroupInput {
+  groupName: String!
+  coverPhoto: String
+}
+"message inputs"
+input MessageInput {
+  content: String!
+  files: [FileInput!]!
+}
+"inputs for post"
+input PostInput {
+  description: String!
+  files: [FileInput!]!
+}
+"input of the reaction"
+input ReactionInput {
+  reactionType: ReactionType!
+}
+"user inputs"
+input SignupInput {
+  email: String!
+  firstname: String
+  lastname: String
+  password: String!
+  civilite: String
+}
+"input for update user"
+input UpdateUserInput {
+  email: String
+  firstname: String
+  lastname: String
+  civilite: String
+  photo: String
+}
+"input for changing theme discussion"
+input DiscussionInput {
+  id: Float!
+  userId: Float!
+  receiverId: Float
+  theme: String!
+}
+"Exposes a URL that specifies the behaviour of this scalar."
+directive @specifiedBy(
+    "The URL that specifies the behaviour of this scalar."
+    url: String!
+  ) on SCALAR
