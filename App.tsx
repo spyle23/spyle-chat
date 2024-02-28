@@ -1,26 +1,16 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { GraphqlProvider } from "./src/provider/GraphqlProvider";
 import { ThemeProvider } from "./src/provider/ThemeProvider";
+import { AuthStack } from "./src/stack/AuthStack";
 
 export default function App() {
   return (
     <GraphqlProvider>
       <ThemeProvider>
-        <View style={styles.container}>
-          <Text>Open up App.tsx to start working on your app!</Text>
-          <StatusBar style="auto" />
-        </View>
+        <NavigationContainer>
+          <AuthStack />
+        </NavigationContainer>
       </ThemeProvider>
     </GraphqlProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
