@@ -5,6 +5,7 @@ import {
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client";
+import { useApplication } from "../store/useApplication";
 
 export const GraphqlProvider = ({
   children,
@@ -14,14 +15,16 @@ export const GraphqlProvider = ({
   const [queryClient, setQueryClient] =
     useState<ApolloClient<NormalizedCacheObject>>();
 
+  const { user } = useApplication();
+
   useEffect(() => {
     const initializeApolloClient = async () => {
-      const client = await apolloClient();
+      const client = await apolloClient(user?.token);
       setQueryClient(client);
     };
 
     initializeApolloClient();
-  }, []);
+  }, [user?.token]);
 
   if (!queryClient) return null;
 

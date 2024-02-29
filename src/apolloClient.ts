@@ -11,18 +11,18 @@ import { createClient } from "graphql-ws";
 import { AuthStorage } from "./utils/AuthStorage";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
-export const apolloClient = async (): Promise<
+export const apolloClient = async (token?: string): Promise<
   ApolloClient<NormalizedCacheObject>
 > => {
   const API_URI = process.env.EXPO_PUBLIC_API_URI;
   const API_URI_WS = process.env.EXPO_PUBLIC_URI_WS;
 
-  const user = await AuthStorage.isAuth();
+  const user = token ? token : (await AuthStorage.isAuth())?.token;
   const httpLink = new HttpLink({
     uri: API_URI,
     fetch,
     headers: {
-      authorization: `Bearer ${user?.token}`,
+      authorization: `Bearer ${user}`,
     },
   });
 
@@ -31,7 +31,7 @@ export const apolloClient = async (): Promise<
       url: API_URI_WS as string,
       lazy: true,
       connectionParams: {
-        authentication: `Bearer ${user?.token}`,
+        authentication: `Bearer ${user}`,
       },
     })
   );
@@ -40,7 +40,7 @@ export const apolloClient = async (): Promise<
     uri: API_URI,
     fetch,
     headers: {
-      authorization: `Bearer ${user?.token}`,
+      authorization: `Bearer ${user}`,
     },
   });
 
