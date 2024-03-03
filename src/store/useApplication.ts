@@ -1,8 +1,9 @@
-import { MD3Theme } from "react-native-paper";
+import { AppbarActionProps, MD3Theme } from "react-native-paper";
 import { LoginData } from "../types/user";
 import { create } from "zustand";
 import { darkTheme, lightTheme } from "../theme";
 import { UserMode } from "../gql/graphql";
+import { AppBarComponentProps } from "../stack/MainNavigation";
 
 type IApplication = {
   user: LoginData;
@@ -11,6 +12,10 @@ type IApplication = {
   changeTheme: (val: MD3Theme) => void;
   logout: () => void;
 };
+
+type IHeader = {
+  changeHead: (val: string, tab: AppbarActionProps[]) => void;
+} & AppBarComponentProps;
 
 export const useApplication = create<IApplication>()((set) => ({
   user: null,
@@ -33,4 +38,15 @@ export const useApplication = create<IApplication>()((set) => ({
         : null,
     })),
   logout: () => set((state) => ({ ...state, user: null })),
+}));
+
+export const useHeader = create<IHeader>()((set) => ({
+  title: "discussions",
+  actions: [{ icon: "camera" }],
+  changeHead: (val, tab) =>
+    set((state) => ({
+      ...state,
+      title: val,
+      actions: tab,
+    })),
 }));

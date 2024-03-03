@@ -3,13 +3,15 @@ import { useApplication } from "../../store/useApplication";
 import { AuthStorage } from "../../utils/AuthStorage";
 import { useMutation } from "@apollo/client";
 import {
+  ChangeStatusMutation,
+  ChangeStatusMutationVariables,
   LoginMutation,
   LoginMutationVariables,
   SignupInput,
   SignupMutation,
   SignupMutationVariables,
 } from "../../gql/graphql";
-import { LOGIN, SIGNUP } from "../../graphql/user";
+import { LOGIN, SIGNUP, STATUS } from "../../graphql/user";
 
 export const useApplicationHook = () => {
   const { user, login, changeTheme, logout, theme } = useApplication();
@@ -23,6 +25,11 @@ export const useApplicationHook = () => {
     SignupMutationVariables
   >(SIGNUP);
 
+  const [changeStatus, { loading: logoutLoading }] = useMutation<
+    ChangeStatusMutation,
+    ChangeStatusMutationVariables
+  >(STATUS);
+
   useEffect(() => {
     if (user) {
       AuthStorage.authenticate(user);
@@ -33,8 +40,10 @@ export const useApplicationHook = () => {
     }
   }, [user]);
 
-  const logoutApp = () => {
-    AuthStorage.clearToken(() => logout());
+  const logoutApp = async () => {
+    if (!user) return;
+    await changeStatus({ variables: { userId: user?.id, status: false } });
+    await AuthStorage.clearToken(() => logout());
   };
 
   const signin = async (email: string, password: string) => {
@@ -58,6 +67,7 @@ export const useApplicationHook = () => {
     loginLoading,
     signupApp,
     signupLoading,
+    logoutLoading,
     error,
     changeTheme,
     logoutApp,
