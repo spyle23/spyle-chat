@@ -423,6 +423,7 @@ input UpdateUserInput {
   firstname: String
   lastname: String
   civilite: String
+  mode: String
   photo: String
 }
 "input for changing theme discussion"

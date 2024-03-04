@@ -12,6 +12,7 @@ import { usePicture } from "../../hook/application/usePicture";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { darkTheme, lightTheme } from "../../theme";
 import { useDrawerItem } from "../../hook/useDrawerItem";
+import { UserMode } from "../../gql/graphql";
 type PressParams = {
   label: string;
   route: string;
@@ -20,13 +21,23 @@ export const DrawerContent: FC<DrawerContentComponentProps> = (props) => {
   const { navigation, state } = props;
   const theme = useTheme();
   const { changeTitle } = useHeaderHook();
-  const { user, changeTheme, logoutApp } = useApplicationHook();
+  const { user, changeTheme, logoutApp, updateUser } = useApplicationHook();
   const handlePress = (val: PressParams) => {
     navigation.navigate(val.route);
     changeTitle(val.label);
   };
   const items = useDrawerItem();
   const url = user?.photo ? usePicture(user.photo) : profil;
+  const handleSwitch = async () => {
+    if (!user) return;
+    await updateUser({
+      variables: {
+        userId: user?.id,
+        updateUserInput: { mode: theme.dark ? UserMode.Light : UserMode.Dark },
+      },
+    });
+    changeTheme(theme.dark ? lightTheme : darkTheme);
+  };
   return (
     <DrawerContentScrollView
       {...props}
@@ -67,9 +78,7 @@ export const DrawerContent: FC<DrawerContentComponentProps> = (props) => {
           <Switch
             value={theme.dark}
             style={{ marginHorizontal: 10 }}
-            onValueChange={() =>
-              changeTheme(theme.dark ? lightTheme : darkTheme)
-            }
+            onValueChange={handleSwitch}
           />
           <Icon
             name="dark-mode"

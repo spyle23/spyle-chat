@@ -10,8 +10,10 @@ import {
   SignupInput,
   SignupMutation,
   SignupMutationVariables,
+  UpdateUserMutation,
+  UpdateUserMutationVariables,
 } from "../../gql/graphql";
-import { LOGIN, SIGNUP, STATUS } from "../../graphql/user";
+import { LOGIN, SIGNUP, STATUS, UPDATE_INFO } from "../../graphql/user";
 
 export const useApplicationHook = () => {
   const { user, login, changeTheme, logout, theme } = useApplication();
@@ -30,14 +32,19 @@ export const useApplicationHook = () => {
     ChangeStatusMutationVariables
   >(STATUS);
 
+  const [updateUser, { loading: updateUserLoading }] = useMutation<
+    UpdateUserMutation,
+    UpdateUserMutationVariables
+  >(UPDATE_INFO);
+
   useEffect(() => {
-    if (user) {
-      AuthStorage.authenticate(user);
-    } else {
-      AuthStorage.isAuth().then((val) => {
+    AuthStorage.isAuth().then((val) => {
+      if (val && !user) {
         login(val);
-      });
-    }
+      } else if (user && !val) {
+        AuthStorage.authenticate(user);
+      }
+    });
   }, [user]);
 
   const logoutApp = async () => {
@@ -66,6 +73,8 @@ export const useApplicationHook = () => {
     signin,
     loginLoading,
     signupApp,
+    updateUser,
+    updateUserLoading,
     signupLoading,
     logoutLoading,
     error,
