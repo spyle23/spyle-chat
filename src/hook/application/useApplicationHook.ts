@@ -38,13 +38,13 @@ export const useApplicationHook = () => {
   >(UPDATE_INFO);
 
   useEffect(() => {
-    AuthStorage.isAuth().then((val) => {
-      if (val && !user) {
+    if (!user) {
+      AuthStorage.isAuth().then((val) => {
         login(val);
-      } else if (user && !val) {
-        AuthStorage.authenticate(user);
-      }
-    });
+      });
+    } else {
+      AuthStorage.authenticate(user);
+    }
   }, [user]);
 
   const logoutApp = async () => {

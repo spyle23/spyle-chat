@@ -1,1 +1,1 @@
-export const LOCALSTORAGE = "spyle-chat"
+export const LOCALSTORAGE = "spyle-chat";

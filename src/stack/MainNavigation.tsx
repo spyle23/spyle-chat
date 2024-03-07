@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, lazy } from "react";
 import {
   BottomNavigation,
   Text,
@@ -7,8 +7,6 @@ import {
   useTheme,
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/AntDesign";
-import Home from "../View/Home";
-import Contact from "../View/Contact";
 import {
   DrawerActions,
   useNavigation,
@@ -16,6 +14,10 @@ import {
 } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useHeaderHook } from "../hook/application/useHeader";
+import { ScreenLoader } from "../components/layout/ScreenLoader";
+
+const Home = lazy(() => import("../View/Home"));
+const Contact = lazy(() => import("../View/Contact"));
 
 export type AppBarComponentProps = {
   title?: string;
@@ -101,7 +103,6 @@ const MainNavigation = () => {
       >
         <Screen
           name="discussions"
-          component={Home}
           options={{
             tabBarIcon: ({ size, focused }) => (
               <Icon
@@ -117,10 +118,15 @@ const MainNavigation = () => {
               />
             ),
           }}
-        />
+        >
+          {() => (
+            <ScreenLoader>
+              <Home />
+            </ScreenLoader>
+          )}
+        </Screen>
         <Screen
           name="contacts"
-          component={Contact}
           options={{
             tabBarIcon: ({ focused, size }) => (
               <Icon
@@ -136,7 +142,13 @@ const MainNavigation = () => {
               />
             ),
           }}
-        />
+        >
+          {() => (
+            <ScreenLoader>
+              <Contact />
+            </ScreenLoader>
+          )}
+        </Screen>
       </Navigator>
     </>
   );

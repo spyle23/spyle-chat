@@ -20,7 +20,7 @@ export const AuthStorage = {
     await AsyncStorage.setItem(LOCALSTORAGE, jsonValue);
     callback && callback(user);
   },
-  clearToken: async(callback: () => void): Promise<void> => {
+  clearToken: async (callback: () => void): Promise<void> => {
     await AsyncStorage.clear();
     callback();
   },

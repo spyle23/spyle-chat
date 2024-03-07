@@ -11,14 +11,14 @@ import { createClient } from "graphql-ws";
 import { AuthStorage } from "./utils/AuthStorage";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
-export const apolloClient = async (token?: string): Promise<
-  ApolloClient<NormalizedCacheObject>
-> => {
+export const apolloClient = async (
+  token?: string
+): Promise<ApolloClient<NormalizedCacheObject>> => {
   const API_URI = process.env.EXPO_PUBLIC_API_URI;
   const API_URI_WS = process.env.EXPO_PUBLIC_URI_WS;
 
   const user = token ? token : (await AuthStorage.isAuth())?.token;
-  const httpLink = new HttpLink({
+  const httpLink: HttpLink = new HttpLink({
     uri: API_URI,
     fetch,
     headers: {
@@ -26,7 +26,7 @@ export const apolloClient = async (token?: string): Promise<
     },
   });
 
-  const wsLink = new GraphQLWsLink(
+  const wsLink: GraphQLWsLink = new GraphQLWsLink(
     createClient({
       url: API_URI_WS as string,
       lazy: true,

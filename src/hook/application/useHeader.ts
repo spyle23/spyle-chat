@@ -7,7 +7,7 @@ export const useHeaderHook = () => {
   const appbarActions: AppBarComponentProps[] = [
     {
       title: "discussions",
-      actions: [{ icon: "camera"}],
+      actions: [{ icon: "camera" }],
     },
     {
       title: "contacts",

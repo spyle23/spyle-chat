@@ -1,9 +1,15 @@
-import Meet from "../View/Meet";
-import MainNavigation from "./MainNavigation";
+// import Meet from "../View/Meet";
+// import MainNavigation from "./MainNavigation";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { ContainerWithHeader } from "../components/layout/ContainerWithHeader";
 import { DrawerContent } from "../components/Drawer/DrawerContent";
-import Groups from "../View/Groups";
+import { lazy } from "react";
+import { ScreenLoader } from "../components/layout/ScreenLoader";
+// import Groups from "../View/Groups";
+
+const Meet = lazy(() => import("../View/Meet"));
+const MainNavigation = lazy(() => import("./MainNavigation"));
+const Groups = lazy(() => import("../View/Groups"));
 
 const { Navigator, Screen } = createDrawerNavigator();
 export const AppStack = () => {
@@ -17,23 +23,29 @@ export const AppStack = () => {
       >
         <Screen name="tab">
           {() => (
-            <ContainerWithHeader>
-              <MainNavigation />
-            </ContainerWithHeader>
+            <ScreenLoader>
+              <ContainerWithHeader>
+                <MainNavigation />
+              </ContainerWithHeader>
+            </ScreenLoader>
           )}
         </Screen>
         <Screen name="meet">
           {() => (
-            <ContainerWithHeader>
-              <Meet />
-            </ContainerWithHeader>
+            <ScreenLoader>
+              <ContainerWithHeader>
+                <Meet />
+              </ContainerWithHeader>
+            </ScreenLoader>
           )}
         </Screen>
         <Screen name="groups">
           {() => (
-            <ContainerWithHeader>
-              <Groups />
-            </ContainerWithHeader>
+            <ScreenLoader>
+              <ContainerWithHeader>
+                <Groups />
+              </ContainerWithHeader>
+            </ScreenLoader>
           )}
         </Screen>
       </Navigator>
