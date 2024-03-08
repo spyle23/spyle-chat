@@ -4,7 +4,13 @@ import {
   MessageDiscussionType,
   UserDiscussionType,
 } from "../../../types/discussion";
-import { StyleSheet, View, ViewProps } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  ViewProps,
+} from "react-native";
 import { Avatar, Text, useTheme } from "react-native-paper";
 import { DynamicAvatar } from "../../../components/Avatar/DynamicAvatar";
 import { LoginData } from "../../../types/user";
@@ -15,7 +21,7 @@ type ItemDiscussionProps = {
   writters?: UserDiscussionType[];
   userDiscuss: UserDiscussionType | DiscussGroupDiscussionType;
   messages: MessageDiscussionType[];
-} & ViewProps;
+} & TouchableOpacityProps;
 export const ItemDiscussion: FC<ItemDiscussionProps> = memo(
   ({ messages, newMessageNbr, user, userDiscuss, writters, ...props }) => {
     const theme = useTheme();
@@ -33,7 +39,10 @@ export const ItemDiscussion: FC<ItemDiscussionProps> = memo(
         ? `vous: ${displayMessage}`
         : displayMessage;
     return (
-      <View style={ItemDiscussionStyle.discussionContainer} {...props}>
+      <TouchableOpacity
+        style={ItemDiscussionStyle.discussionContainer}
+        {...props}
+      >
         <DynamicAvatar user={userDiscuss} />
         <View>
           <Text style={{ fontWeight: "bold", fontSize: 18 }}>
@@ -66,7 +75,7 @@ export const ItemDiscussion: FC<ItemDiscussionProps> = memo(
             </View>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 );

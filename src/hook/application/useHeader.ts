@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import { AppBarComponentProps } from "../../stack/MainNavigation";
 import { useHeader } from "../../store/useApplication";
 

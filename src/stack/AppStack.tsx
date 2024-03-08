@@ -10,6 +10,7 @@ import { ScreenLoader } from "../components/layout/ScreenLoader";
 const Meet = lazy(() => import("../View/Meet"));
 const MainNavigation = lazy(() => import("./MainNavigation"));
 const Groups = lazy(() => import("../View/Groups"));
+const Message = lazy(() => import("../View/Message"));
 
 const { Navigator, Screen } = createDrawerNavigator();
 export const AppStack = () => {
@@ -31,20 +32,27 @@ export const AppStack = () => {
           )}
         </Screen>
         <Screen name="meet">
-          {() => (
+          {(props) => (
             <ScreenLoader>
               <ContainerWithHeader>
-                <Meet />
+                <Meet {...props} />
               </ContainerWithHeader>
             </ScreenLoader>
           )}
         </Screen>
         <Screen name="groups">
-          {() => (
+          {(props) => (
             <ScreenLoader>
               <ContainerWithHeader>
-                <Groups />
+                <Groups {...props} />
               </ContainerWithHeader>
+            </ScreenLoader>
+          )}
+        </Screen>
+        <Screen name="detail">
+          {(props) => (
+            <ScreenLoader>
+              <Message {...props} />
             </ScreenLoader>
           )}
         </Screen>

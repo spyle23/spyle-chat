@@ -14,7 +14,10 @@ type IApplication = {
 };
 
 type IHeader = {
-  changeHead: (val: string, tab: AppbarActionProps[]) => void;
+  changeHead: (
+    val: string,
+    tab: AppbarActionProps[],
+  ) => void;
 } & AppBarComponentProps;
 
 export const useApplication = create<IApplication>()((set) => ({

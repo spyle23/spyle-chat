@@ -1,8 +1,8 @@
 import React from "react";
 import { AppBarComponent } from "../../stack/MainNavigation";
-import { useHeaderHook } from "../../hook/application/useHeader";
 import { View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { useHeader } from "../../store/useApplication";
 
 export const ContainerWithHeader = ({
   children,
@@ -10,7 +10,7 @@ export const ContainerWithHeader = ({
   children: React.ReactNode;
 }) => {
   const theme = useTheme();
-  const { title, actions } = useHeaderHook();
+  const { title, actions } = useHeader();
   return (
     <>
       <AppBarComponent actions={actions} title={title} />

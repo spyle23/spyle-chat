@@ -119,9 +119,9 @@ const MainNavigation = () => {
             ),
           }}
         >
-          {() => (
+          {(props) => (
             <ScreenLoader>
-              <Home />
+              <Home {...props} />
             </ScreenLoader>
           )}
         </Screen>
@@ -143,9 +143,9 @@ const MainNavigation = () => {
             ),
           }}
         >
-          {() => (
+          {(props) => (
             <ScreenLoader>
-              <Contact />
+              <Contact {...props} />
             </ScreenLoader>
           )}
         </Screen>

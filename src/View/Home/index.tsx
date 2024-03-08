@@ -1,10 +1,12 @@
 import { FlatList, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { useDiscussion } from "../../hook/discussion/useDiscussion";
 import { ItemDiscussion } from "./components/ItemDiscussion";
 import { ItemDiscussionSkeleton } from "./components/ItemDiscussionSkeleton";
+import { FC } from "react";
+import { IBaseScreen } from "../../types/screen";
 
-const Home = () => {
+const Home: FC<IBaseScreen> = ({ navigation }) => {
   const theme = useTheme();
   const { discussions, loading, fetchMore, user } = useDiscussion();
   return (
@@ -18,6 +20,13 @@ const Home = () => {
             messages={item.messages}
             user={user}
             userDiscuss={item.userDiscuss}
+            onPress={() =>
+              navigation.navigate("detail", {
+                userDiscuss: item.userDiscuss,
+                id: item.id,
+                theme: item.theme,
+              })
+            }
           />
         )}
         ListFooterComponent={loading ? <ItemDiscussionSkeleton /> : undefined}
