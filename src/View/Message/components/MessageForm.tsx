@@ -1,8 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import {
   MessageInput,
-  UploadMutation,
-  UploadMutationVariables,
+  WrittingCheckMutation,
+  WrittingCheckMutationVariables,
 } from "../../../gql/graphql";
 import { MD3Theme, TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -17,10 +17,13 @@ import {
 } from "expo-image-picker";
 import { FC, useEffect, useState } from "react";
 import { ReactNativeFile } from "../../../utils/ReactNative";
+import { useMutation } from "@apollo/client";
+import { WRITTING_CHECK } from "../../../graphql/message";
 
 type MessageFormProps = {
   theme: MD3Theme;
   sendMessage: (data: any[], message: MessageInput) => Promise<void>;
+  writte: (val: boolean) => Promise<void>;
 };
 
 const defaultValues: MessageInput = {
@@ -28,12 +31,17 @@ const defaultValues: MessageInput = {
   files: [],
 };
 
-export const MessageForm: FC<MessageFormProps> = ({ theme, sendMessage }) => {
+export const MessageForm: FC<MessageFormProps> = ({
+  theme,
+  sendMessage,
+  writte,
+}) => {
   const [message, setMessage] = useState<MessageInput>(defaultValues);
   const [images, setImages] = useState<ImagePickerAsset[]>([]);
   const handleSubmit = async () => {
     if (!message.content) return;
     await sendMessage(images, message);
+    await writte(false);
     setMessage(defaultValues);
     setImages([]);
   };
@@ -108,6 +116,7 @@ export const MessageForm: FC<MessageFormProps> = ({ theme, sendMessage }) => {
         value={message.content}
         theme={{ roundness: 30 }}
         onChangeText={(e) => setMessage((curr) => ({ ...curr, content: e }))}
+        onFocus={async () => writte(true)}
         onSubmitEditing={handleSubmit}
         placeholder="Votre message"
         style={styles.input}

@@ -25,12 +25,15 @@ import {
   SendMessageDiscussGroupMobileMutationVariables,
   WriteMessageSubscription,
   WriteMessageSubscriptionVariables,
+  WrittingCheckMutation,
+  WrittingCheckMutationVariables,
 } from "../../gql/graphql";
 import {
   LISTEN_MESSAGE,
   MESSAGE_TWO_USER,
   SEND_MESSAGE_MOBILE,
   WRITING_MESSAGE,
+  WRITTING_CHECK,
 } from "../../graphql/message";
 import { MessageItem } from "./components/MessageItem";
 import { MessageForm } from "./components/MessageForm";
@@ -64,6 +67,10 @@ const Message: FC<IBaseScreen<MessageParamsRoute>> = ({
     variables: { userId: user?.id as number },
     skip: !user?.id,
   });
+  const [writte] = useMutation<
+    WrittingCheckMutation,
+    WrittingCheckMutationVariables
+  >(WRITTING_CHECK);
   const [sendMessage] = useMutation<
     SendMessageDiscussGroupMobileMutation,
     SendMessageDiscussGroupMobileMutationVariables
@@ -221,6 +228,18 @@ const Message: FC<IBaseScreen<MessageParamsRoute>> = ({
     }
   };
 
+  const handleWrite = async (val: boolean) => {
+    if (params && "id" in params && user) {
+      await writte({
+        variables: {
+          isWritting: val,
+          userId: user?.id,
+          discussionId: params.id,
+        },
+      });
+    }
+  };
+
   return (
     <View
       style={{
@@ -291,7 +310,11 @@ const Message: FC<IBaseScreen<MessageParamsRoute>> = ({
           <Text>typing...</Text>
         </View>
       )}
-      <MessageForm theme={theme} sendMessage={redefinedSendMessage} />
+      <MessageForm
+        theme={theme}
+        sendMessage={redefinedSendMessage}
+        writte={handleWrite}
+      />
     </View>
   );
 };
