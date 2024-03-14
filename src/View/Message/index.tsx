@@ -9,16 +9,31 @@ import {
 } from "../../types/discussion";
 import { DynamicAvatar } from "../../components/Avatar/DynamicAvatar";
 import { useApplication } from "../../store/useApplication";
-import { useLazyQuery, useSubscription } from "@apollo/client";
 import {
+  useApolloClient,
+  useLazyQuery,
+  useMutation,
+  useSubscription,
+} from "@apollo/client";
+import {
+  MessageInput,
   MessageToUserSubscription,
   MessageToUserSubscriptionVariables,
   MessageTwoUserQuery,
   MessageTwoUserQueryVariables,
+  SendMessageDiscussGroupMobileMutation,
+  SendMessageDiscussGroupMobileMutationVariables,
+  WriteMessageSubscription,
+  WriteMessageSubscriptionVariables,
 } from "../../gql/graphql";
-import { LISTEN_MESSAGE, MESSAGE_TWO_USER } from "../../graphql/message";
+import {
+  LISTEN_MESSAGE,
+  MESSAGE_TWO_USER,
+  SEND_MESSAGE_MOBILE,
+  WRITING_MESSAGE,
+} from "../../graphql/message";
 import { MessageItem } from "./components/MessageItem";
-import { MessageType } from "../../types/message";
+import { MessageForm } from "./components/MessageForm";
 
 type MessageParamsRoute = {
   detail:
@@ -40,6 +55,19 @@ const Message: FC<IBaseScreen<MessageParamsRoute>> = ({
   const { user } = useApplication();
   const { params } = route;
   const [finished, setFinished] = useState<boolean>(false);
+  const apolloClient = useApolloClient();
+  const [writters, setWritters] = useState<UserDiscussionType[]>([]);
+  const { data: writting } = useSubscription<
+    WriteMessageSubscription,
+    WriteMessageSubscriptionVariables
+  >(WRITING_MESSAGE, {
+    variables: { userId: user?.id as number },
+    skip: !user?.id,
+  });
+  const [sendMessage] = useMutation<
+    SendMessageDiscussGroupMobileMutation,
+    SendMessageDiscussGroupMobileMutationVariables
+  >(SEND_MESSAGE_MOBILE);
   const [executeQuery, { data: messages, loading, fetchMore }] = useLazyQuery<
     MessageTwoUserQuery,
     MessageTwoUserQueryVariables
@@ -115,8 +143,92 @@ const Message: FC<IBaseScreen<MessageParamsRoute>> = ({
     }
   }, [params, navigation, theme]);
 
+  useEffect(() => {
+    if (
+      data &&
+      params &&
+      "id" in params &&
+      messages &&
+      !messages.messageTwoUser.find(
+        (i) => i.id === data.messageToUser.messages[0].id
+      )
+    ) {
+      apolloClient.writeQuery<
+        MessageTwoUserQuery,
+        MessageTwoUserQueryVariables
+      >({
+        data: {
+          messageTwoUser: [
+            ...messages.messageTwoUser,
+            ...data.messageToUser.messages,
+          ],
+        },
+        query: MESSAGE_TWO_USER,
+        variables: { discussionId: params.id, cursor: null, limit: 15 },
+      });
+    }
+  }, [data, messages, params]);
+
+  useEffect(() => {
+    if (
+      params &&
+      "id" in params &&
+      writting &&
+      writting.writeMessage.discussionId === params.id
+    ) {
+      setWritters((curr) => {
+        if (writting.writeMessage.isWritting) {
+          if (!curr.find((a) => a.id === writting.writeMessage.user.id)) {
+            return [...curr, { ...writting.writeMessage.user }];
+          }
+          return curr;
+        } else {
+          return curr.filter((a) => a.id !== writting.writeMessage.user.id);
+        }
+      });
+    }
+  }, [writting, params]);
+
+  const redefinedSendMessage = async (data: any[], message: MessageInput) => {
+    if (params && "id" in params && user) {
+      const reponse = await sendMessage({
+        variables: {
+          data,
+          discussionId: params.id,
+          userId: user.id,
+          messageInput: message,
+          discussGroupId:
+            "groupName" in params.userDiscuss ? params.userDiscuss.id : null,
+          receiverId:
+            "firstname" in params.userDiscuss ? params.userDiscuss.id : null,
+        },
+      });
+      if (messages?.messageTwoUser && reponse.data) {
+        apolloClient.writeQuery<
+          MessageTwoUserQuery,
+          MessageTwoUserQueryVariables
+        >({
+          data: {
+            messageTwoUser: [
+              ...messages.messageTwoUser,
+              ...reponse.data?.sendMessageDiscussGroupMobile.messages,
+            ],
+          },
+          query: MESSAGE_TWO_USER,
+          variables: { discussionId: params.id, cursor: null, limit: 15 },
+        });
+      }
+    }
+  };
+
   return (
-    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+    <View
+      style={{
+        backgroundColor: theme.colors.background,
+        flex: 1,
+        justifyContent: "flex-start",
+      }}
+    >
       <FlatList
         inverted
         data={messages?.messageTwoUser}
@@ -164,13 +276,32 @@ const Message: FC<IBaseScreen<MessageParamsRoute>> = ({
         }}
         keyExtractor={({ id }, index) => `${id}-${index}`}
       />
-      <View>
-        <Text>test</Text>
-      </View>
+      {writters.length > 0 && (
+        <View
+          style={[
+            styles.containerWritters,
+            { alignItems: "center", paddingHorizontal: 10 },
+          ]}
+        >
+          <View style={[styles.containerWritters, { marginRight: 20 }]}>
+            {writters.map((a) => (
+              <DynamicAvatar key={a.id} user={a} size={20} />
+            ))}
+          </View>
+          <Text>typing...</Text>
+        </View>
+      )}
+      <MessageForm theme={theme} sendMessage={redefinedSendMessage} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({ title: { fontSize: 18 } });
+const styles = StyleSheet.create({
+  title: { fontSize: 18 },
+  containerWritters: {
+    display: "flex",
+    flexDirection: "row",
+  },
+});
 
 export default Message;

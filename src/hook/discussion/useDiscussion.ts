@@ -17,6 +17,8 @@ import {
   UserDiscussionType,
 } from "../../types/discussion";
 import { LoginData } from "../../types/user";
+import { Audio } from "expo-av";
+import messenger from "../../../assets/Messenger_Facebook.mp3";
 
 export const determineUserOrGroup = (
   user: LoginData,
@@ -60,7 +62,27 @@ export const useDiscussion = () => {
     variables: { userId: user?.id as number },
     skip: !user?.id,
   });
-
+  useEffect(() => {
+    if (
+      data &&
+      discussions.find(
+        (a) =>
+          a.id === data.messageToUser.id &&
+          a.messages[0].id !== data.messageToUser.messages[0].id
+      )
+    ) {
+      const notificationsLogic = async () => {
+        const soundObject = new Audio.Sound();
+        try {
+          await soundObject.loadAsync(messenger);
+          await soundObject.playAsync();
+        } catch (error) {
+          console.log("error", error);
+        }
+      };
+      notificationsLogic();
+    }
+  }, [data, discussions]);
   useEffect(() => {
     if (messageData?.getDiscussionCurrentUser) {
       if (data) {

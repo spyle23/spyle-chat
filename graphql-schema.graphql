@@ -242,6 +242,7 @@ type Mutation {
   upload(data: [Upload!]!): [FileExt!]!
   deleteFile(url: String!): String!
   sendMessageDiscoussGroup(discussGroupId: Float, receiverId: Float, discussionId: Float!, userId: Float!, messageInput: MessageInput!): DiscussionExtend!
+  sendMessageDiscussGroupMobile(discussGroupId: Float, receiverId: Float, discussionId: Float!, userId: Float!, messageInput: MessageInput!, data: [Upload!]): DiscussionExtend!
   writtingCheck(isWritting: Boolean!, discussionId: Float!, userId: Float!): MessageResponse!
   deleteMessageById(userId: Float!, messageId: Float!): String!
   modifyMessage(userId: Float!, newMessage: String!, messageId: Float!): String!

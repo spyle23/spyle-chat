@@ -10,6 +10,18 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 import { AuthStorage } from "./utils/AuthStorage";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import { ExtractableFile } from "apollo-upload-client/isExtractableFile.mjs";
+import { ReactNativeFile } from "./utils/ReactNative";
+
+type CustomIsExtractableFile = ExtractableFile | ReactNativeFile;
+
+function customIsExtractableFile(value: unknown): value is CustomIsExtractableFile {
+  return (
+    (typeof File !== "undefined" && value instanceof File) ||
+    (typeof Blob !== "undefined" && value instanceof Blob) ||
+    value instanceof ReactNativeFile
+  );
+}
 
 export const apolloClient = async (
   token?: string
@@ -42,6 +54,7 @@ export const apolloClient = async (
     headers: {
       authorization: `Bearer ${user}`,
     },
+    isExtractableFile: customIsExtractableFile,
   });
 
   const splitLink = split(

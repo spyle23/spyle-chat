@@ -6,7 +6,6 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
-// import Icon from "react-native-vector-icons/MaterialIcons";
 import signin from "../../../assets/login.png";
 import { Link } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
