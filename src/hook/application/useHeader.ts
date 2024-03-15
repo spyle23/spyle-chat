@@ -2,11 +2,17 @@ import { AppBarComponentProps } from "../../stack/MainNavigation";
 import { useHeader } from "../../store/useApplication";
 
 export const useHeaderHook = () => {
-  const { title, actions, changeHead } = useHeader();
+  const { title, actions, changeHead, toogleDiscussion, newDiscussion } =
+    useHeader();
   const appbarActions: AppBarComponentProps[] = [
     {
       title: "discussions",
-      actions: [{ icon: "camera" }],
+      actions: [
+        {
+          icon: "comment-plus-outline",
+          onPress: () => toogleDiscussion(!newDiscussion),
+        },
+      ],
     },
     {
       title: "contacts",
@@ -29,6 +35,8 @@ export const useHeaderHook = () => {
   return {
     title,
     changeTitle,
+    newDiscussion,
+    toogleDiscussion,
     actions,
   };
 };

@@ -14,6 +14,8 @@ type IApplication = {
 };
 
 type IHeader = {
+  newDiscussion: boolean;
+  toogleDiscussion: (i: boolean) => void;
   changeHead: (val: string, tab: AppbarActionProps[]) => void;
 } & AppBarComponentProps;
 
@@ -42,7 +44,14 @@ export const useApplication = create<IApplication>()((set) => ({
 
 export const useHeader = create<IHeader>()((set) => ({
   title: "discussions",
-  actions: [{ icon: "camera" }],
+  newDiscussion: false,
+  toogleDiscussion: (i) => set((state) => ({ ...state, newDiscussion: i })),
+  actions: [
+    {
+      icon: "comment-plus-outline",
+      onPress: () => set((state) => ({ ...state, newDiscussion: true })),
+    },
+  ],
   changeHead: (val, tab) =>
     set((state) => ({
       ...state,

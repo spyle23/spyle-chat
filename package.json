@@ -7,7 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test:unit": "jest --testMatch=**/__test__/**/*.test.[jt]s?(x)", 
+    "test:unit": "jest --testMatch=**/__test__/**/*.test.[jt]s?(x)",
     "test:integration": "jest --testMatch=**/__test__/**/*.spec.[jt]s?(x)",
     "prettier:check": "prettier --check ./src",
     "prettier:write": "prettier --write ./src",
@@ -73,6 +73,7 @@
     "@types/react-dom": "~18.0.10",
     "@types/react-native-vector-icons": "^6.4.18",
     "@types/react-test-renderer": "^18.0.7",
+    "detox": "^20.19.2",
     "eslint": "^8.57.0",
     "prettier": "3.2.5",
     "typescript": "^5.1.3"

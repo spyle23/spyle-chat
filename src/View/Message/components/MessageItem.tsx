@@ -4,6 +4,7 @@ import { LoginData } from "../../../types/user";
 import { MessageType } from "../../../types/message";
 import { Card, Paragraph, Text, useTheme } from "react-native-paper";
 import { DynamicAvatar } from "../../../components/Avatar/DynamicAvatar";
+import { extractColorFromGradient } from "../../../utils/theme";
 
 type MessageItemProps = {
   theme: string;
@@ -13,6 +14,7 @@ type MessageItemProps = {
 
 export const MessageItem: FC<MessageItemProps> = ({ theme, user, message }) => {
   const systemTheme = useTheme();
+  const colors = extractColorFromGradient(theme);
   return (
     <View
       style={{
