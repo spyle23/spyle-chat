@@ -6,6 +6,10 @@ type ScreenLoaderProps = {
 };
 export const ScreenLoader: FC<ScreenLoaderProps> = ({ children }) => {
   return (
-    <Suspense fallback={<ActivityIndicator animating />}>{children}</Suspense>
+    <Suspense
+      fallback={<ActivityIndicator testID="activity-indicator" animating />}
+    >
+      {children}
+    </Suspense>
   );
 };

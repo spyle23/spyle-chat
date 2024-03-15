@@ -39,7 +39,11 @@ export const MessageItem: FC<MessageItemProps> = ({ theme, user, message }) => {
         }}
       >
         <Card.Content>
-          <Paragraph>{message.content}</Paragraph>
+          <Paragraph
+            style={{ color: user?.id === message.User.id ? "#fff" : "#000" }}
+          >
+            {message.content}
+          </Paragraph>
         </Card.Content>
       </Card>
     </View>

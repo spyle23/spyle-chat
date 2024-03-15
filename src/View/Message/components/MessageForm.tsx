@@ -116,7 +116,8 @@ export const MessageForm: FC<MessageFormProps> = ({
         value={message.content}
         theme={{ roundness: 30 }}
         onChangeText={(e) => setMessage((curr) => ({ ...curr, content: e }))}
-        onFocus={async () => writte(true)}
+        onFocus={async () => await writte(true)}
+        onBlur={async () => await writte(false)}
         onSubmitEditing={handleSubmit}
         placeholder="Votre message"
         style={styles.input}

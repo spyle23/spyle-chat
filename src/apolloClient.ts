@@ -15,7 +15,9 @@ import { ReactNativeFile } from "./utils/ReactNative";
 
 type CustomIsExtractableFile = ExtractableFile | ReactNativeFile;
 
-function customIsExtractableFile(value: unknown): value is CustomIsExtractableFile {
+function customIsExtractableFile(
+  value: unknown
+): value is CustomIsExtractableFile {
   return (
     (typeof File !== "undefined" && value instanceof File) ||
     (typeof Blob !== "undefined" && value instanceof Blob) ||

@@ -45,10 +45,7 @@ export const DynamicAvatar = <
   }, [user]);
   return (
     <View style={{ marginRight: 20, position: "relative" }} {...props}>
-      <Avatar.Image
-        size={size ?? 45}
-        source={source}
-      />
+      <Avatar.Image size={size ?? 45} source={source} />
       {"firstname" in user && user.status && (
         <View style={dynamicAvatarStyle.dot} />
       )}

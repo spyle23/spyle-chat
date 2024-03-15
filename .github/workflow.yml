@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses:  actions/Checkout@v2
+      
+      - name: setup node version
+        uses: actions/setup-node@v2
+        with: 
+          node-version: "20.11.0"
+
+      - name: install dependancies
+        run: yarn --exact
+      
+      - name: test unit for mobile app
+        run: yarn test:unit
