@@ -14,6 +14,7 @@ import {
 import { Avatar, Text, useTheme } from "react-native-paper";
 import { DynamicAvatar } from "../../../components/Avatar/DynamicAvatar";
 import { LoginData } from "../../../types/user";
+import LottieView from "lottie-react-native";
 
 type ItemDiscussionProps = {
   newMessageNbr: number;
@@ -51,7 +52,13 @@ export const ItemDiscussion: FC<ItemDiscussionProps> = memo(
               : userDiscuss.firstname + " " + userDiscuss.lastname}
           </Text>
           {writters && writters.length > 0 ? (
-            <Text>typing...</Text>
+            <LottieView
+              source={require("../../../../assets/chating.json")}
+              autoPlay
+              loop
+              resizeMode="cover"
+              style={{ width: 50, height: 10, marginVertical: 10 }}
+            />
           ) : (
             <View style={ItemDiscussionStyle.containerMessage}>
               <Text

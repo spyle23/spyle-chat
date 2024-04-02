@@ -37,6 +37,7 @@ import {
 } from "../../graphql/message";
 import { MessageItem } from "./components/MessageItem";
 import { MessageForm } from "./components/MessageForm";
+import LottieView from "lottie-react-native";
 
 type MessageParamsRoute = {
   detail:
@@ -307,7 +308,13 @@ const Message: FC<IBaseScreen<MessageParamsRoute>> = ({
               <DynamicAvatar key={a.id} user={a} size={20} />
             ))}
           </View>
-          <Text>typing...</Text>
+          <LottieView
+            source={require("../../../assets/chating.json")}
+            autoPlay
+            loop
+            resizeMode="cover"
+            style={{ width: 50, height: 10}}
+          />
         </View>
       )}
       <MessageForm

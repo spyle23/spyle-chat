@@ -98,6 +98,12 @@ const MainNavigation = () => {
 
               return null;
             }}
+            getBadge={({ route }) => {
+              const { options } = descriptors[route.key];
+              if (options.tabBarBadge) {
+                return options.tabBarBadge;
+              }
+            }}
           />
         )}
       >
@@ -117,6 +123,11 @@ const MainNavigation = () => {
                 size={size}
               />
             ),
+            tabBarBadgeStyle: {
+              backgroundColor: "red",
+              fontSize: 20
+            },
+            tabBarBadge: 1
           }}
         >
           {(props) => (

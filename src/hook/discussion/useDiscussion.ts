@@ -39,6 +39,7 @@ export const useDiscussion = () => {
     data: messageData,
     loading,
     fetchMore,
+    refetch,
   } = useQuery<
     GetDiscussionCurrentUserQuery,
     GetDiscussionCurrentUserQueryVariables
@@ -177,6 +178,7 @@ export const useDiscussion = () => {
   return {
     discussions,
     loading,
+    refetch,
     user,
     fetchMore,
   };

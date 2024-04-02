@@ -1,14 +1,17 @@
 import { FlatList, View } from "react-native";
-import { useTheme } from "react-native-paper";
+import { Portal, useTheme } from "react-native-paper";
 import { useDiscussion } from "../../hook/discussion/useDiscussion";
 import { ItemDiscussion } from "./components/ItemDiscussion";
 import { ItemDiscussionSkeleton } from "./components/ItemDiscussionSkeleton";
 import { FC } from "react";
 import { IBaseScreen } from "../../types/screen";
+import { DiscussionOverlay } from "../../components/Overlay/DiscussionOverlay";
+import { useHeader } from "../../store/useApplication";
 
 const Home: FC<IBaseScreen> = ({ navigation }) => {
   const theme = useTheme();
-  const { discussions, loading, fetchMore, user } = useDiscussion();
+  const { discussions, loading, fetchMore, user, refetch } = useDiscussion();
+  const { newDiscussion, toogleDiscussion } = useHeader();
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <FlatList
@@ -47,6 +50,13 @@ const Home: FC<IBaseScreen> = ({ navigation }) => {
         }
         keyExtractor={(item) => `${item.id}`}
       />
+      <Portal>
+        <DiscussionOverlay
+          visible={newDiscussion}
+          refetch={refetch}
+          onDismiss={() => toogleDiscussion(false)}
+        />
+      </Portal>
     </View>
   );
 };
